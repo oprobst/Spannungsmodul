@@ -350,8 +350,8 @@ UsedLibrary="F:/Hobby/Elektronik/eagle/lbr/zilog.lbr"
 
 [Win_1]
 Type="Control Panel"
-Loc="0 0 1330 736"
-State=2
+Loc="-8 -8 1911 1008"
+State=1
 Number=0
 
 [Desktop]

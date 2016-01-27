@@ -1,8 +1,8 @@
 #include "VoltageCheck.h"
 
-uint16_t shutdownTresholdVoltage = 0
+uint16_t shutdownTresholdVoltage = 0;
 
-void initADC (uint16_t shutDownTreshold = 600){ 
+void initADC (uint16_t shutDownTreshold) { 
 
   shutdownTresholdVoltage = shutDownTreshold;
   // ADC Configuration: Mux only for PB3, RefVoltage = Vcc, no left shift for 10bit accuracy.
@@ -28,14 +28,6 @@ void initADC (uint16_t shutDownTreshold = 600){
   }
   (void) ADCW;
 }
- 
-uint16_t getVoltage (void){
-	return readADCsamples (50);
-}
-
-uint8_t shutdownVoltageReached(void){
-	return (readADCsamples < shutdownTresholdVoltage);
-}
 
 /* 
  * Do a single ADC read
@@ -56,6 +48,7 @@ uint16_t readADC(void)
 	return raw_adc;                    
 }
 
+
 /*
  * Do a few samples and return average.
  *
@@ -71,4 +64,15 @@ uint16_t readADCsamples( uint8_t nsamples )
 	
 	return (uint16_t)( sum / nsamples );
 }
+ 
+uint16_t getVoltage (void){
+	return readADCsamples (50);
+}
+
+uint8_t shutdownVoltageReached(void){
+	return (getVoltage () < shutdownTresholdVoltage);
+}
+
+
+
 

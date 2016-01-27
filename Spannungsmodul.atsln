@@ -5,6 +5,16 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "Spannungsmodul", "Spannungsmodul\Spannungsmodul.cproj", "{DCE6C7E3-EE26-4D79-826B-08594B9AD897}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B5D88985-694A-45B5-ACDE-7BE7B9A8F17F}"
+	ProjectSection(SolutionItems) = preProject
+		Spannungsmodul\PowerSwitch.c = Spannungsmodul\PowerSwitch.c
+		Spannungsmodul\PowerSwitch.h = Spannungsmodul\PowerSwitch.h
+		Spannungsmodul\StartupTimer.c = Spannungsmodul\StartupTimer.c
+		Spannungsmodul\StartupTimer.h = Spannungsmodul\StartupTimer.h
+		Spannungsmodul\VoltageCheck.c = Spannungsmodul\VoltageCheck.c
+		Spannungsmodul\VoltageCheck.h = Spannungsmodul\VoltageCheck.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|AVR = Debug|AVR

@@ -1,12 +1,13 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <stdint.h> 
  
 //Variablen für die Zeit
-volatile unsigned uint16_t millisekunden;
-volatile unsigned uint8_t sekunde;
-volatile unsigned uint8_t minute;
-volatile unsigned uint8_t stunde;
+uint16_t millisekunden;
+uint8_t sekunde;
+uint8_t minute;
+uint8_t stunde;
 
 uint8_t minuteBlocks = 0;
 uint8_t hours = 0;
@@ -48,7 +49,7 @@ ISR (TIMER0_COMPA_vect)
 }
 void checkIfTimeIsOver(){
 	if (stunde*60+minute > hours*60+minuteBlocks*5){
-		turnOn();
+		switchOn();
 	}
 }
 

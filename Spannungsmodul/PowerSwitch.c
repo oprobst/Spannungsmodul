@@ -1,3 +1,6 @@
+#include <stdint.h> 
+#define TRUE 1
+#define FALSE 0
 
 uint8_t isStarted = FALSE;
 
@@ -9,7 +12,7 @@ void switchOn (void){
 	 isStarted = FALSE;
  }
  
-void uint8_t isOn (void){
+uint8_t isOn (void){
 	return isStarted;
 	
 }

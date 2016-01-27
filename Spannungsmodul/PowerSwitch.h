@@ -3,13 +3,13 @@
 
 
 /* 
- * Turn on power by setting MOSFET high and send impulse to relais
+ * Turn on power by setting MOSFET high and send impulse to relays
  *
  */
 void switchOn (void);
 
 /*
- * Turn off power by setting MOSFET low and send impulse to relais
+ * Turn off power by setting MOSFET low and send impulse to relays
  *
  */
  void switchOff (void);

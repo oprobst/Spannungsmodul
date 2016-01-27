@@ -8,7 +8,10 @@
 #include <avr/io.h> 
 #include <avr/sleep.h>
 
-#include <VoltageCheck.h>
+#include "VoltageCheck.h"
+#include "StartupTimer.h"
+#include "PowerSwitch.h"
+
 #define F_CPU 1000000UL //1 MHz
 
 #define TRUE 1
@@ -29,11 +32,11 @@ int main(void)
     DDRB |= ((1 << PB1) |(1 << PB2) |(0 << PB3) |(1 << PB4) | (1 << PB0));
    
     initADC(670);
-	
+	PORTB |= (1<<PB4);
 	sei();
 	
     //deleteme:
-     int minus = 1;
+   //  int minus = 1;
     	
  while( 1 ) {
 	 
@@ -42,7 +45,7 @@ int main(void)
 	 
 	 checkForButton();
 	 	 
-		 
+	/*	 
 	  for (int i = 0; i < (adcval / 100); i++){
 		PORTB=(0x00);
 		_delay_ms(300);
@@ -63,20 +66,25 @@ int main(void)
 			 minus = 0;
 			 PORTB |= (1<<PB1);
 			 PORTB &= ~(1<<PB2);
-		 }
+		 }*/
     }
+}
+
+void checkForButton (void){
+	
+	
 }
 
 void checkForShutdown (void){
 	 if (shutdownVoltageReached()){  	 	   
 	   while (1){	     
-		 // wait 5 sec and then turn off.
-		 for (uint8_t i = 0; i< 25 ; i++ ){
-			 _delay_ms(200);
+		 // wait 10 sec and then turn off.
+		 for (uint8_t i = 0; i< 100 ; i++ ){
+			 _delay_ms(100);
 			 PINB |= (1<<PB4); //Invert PB4           
 		 }
 		  
-	     turnOff();
+	     switchOff();
 		 // Go to sleep and only wake up on reset/power switch.
 		 cli(); //disable interrupts
 		 PORTB &= ~(1<<PB4); // LED off
@@ -90,5 +98,6 @@ void checkForShutdown (void){
 		  PINB |= (1<<PB4); //Invert PB4          
 	     }
 	   }
-	 }  
+	 }
 }
+

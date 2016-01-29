@@ -10,11 +10,11 @@ In addition, it provides a PIN output for a 5V DCDC converted voltage. Maximum c
 
 To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8.4V to 6V) LiPo batteries is available.
 
-*JP1*: External interface exports 5V via DCDC Converter. Additional pin with source voltage
-*JP2*: ISP for Programmer
-*JP3*: Disables the relay. Used to prevent uncontrolled action during programming.
-*JP4*: Switches low voltage shutdown detection between 2s and 3s LiPo batteries.
-*X1*: 3x GND connector
-*X2*: 1x Input voltage, 2x output voltage via relay
+   * *JP1*: External interface exports 5V via DCDC Converter. Additional pin with source voltage
+   * *JP2*: ISP for Programmer
+   * *JP3*: Disables the relay. Used to prevent uncontrolled action during programming.
+   * *JP4*: Switches low voltage shutdown detection between 2s and 3s LiPo batteries.
+   * *X1*: 3x GND connector
+   * *X2*: 1x Input voltage, 2x output voltage via relay
 
 ![Exported schematic for the module](/Schaltplan.png?raw=true "Schematic")

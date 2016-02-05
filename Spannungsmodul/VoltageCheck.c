@@ -1,37 +1,40 @@
 #include "VoltageCheck.h"
 
+#include <stdint.h>
+#include <util/delay.h>
+
 uint16_t shutdownTresholdVoltage = 0;
 
-void initADC (uint16_t shutDownTreshold) { 
+void initADC (uint16_t shutDownTreshold) {
 
-  shutdownTresholdVoltage = shutDownTreshold;
-  // ADC Configuration: Mux only for PB3, RefVoltage = Vcc, no left shift for 10bit accuracy.
-  ADMUX =
-  (0 << ADLAR) |     
-  (0 << REFS1) |    
-  (0 << REFS0) |    
-  (0 << MUX3)  |    
-  (0 << MUX2)  |    
-  (1 << MUX1)  |    
-  (1 << MUX0);      
+	shutdownTresholdVoltage = shutDownTreshold;
+	// ADC Configuration: Mux only for PB3, RefVoltage = Vcc, no left shift for 10bit accuracy.
+	ADMUX =
+	(0 << ADLAR) |
+	(0 << REFS1) |
+	(0 << REFS0) |
+	(0 << MUX3)  |
+	(0 << MUX2)  |
+	(1 << MUX1)  |
+	(1 << MUX0);
 
-  //ADC enabled, prescaler to 128 bit
-  ADCSRA =
-  (1 << ADEN)  |   
-  (1 << ADPS2) |   
-  (1 << ADPS1) |  
-  (1 << ADPS0);   
- 
-  //do one read
-  ADCSRA |= (1<<ADSC);                  
-  while (ADCSRA & (1<<ADSC) ) {         
-  }
-  (void) ADCW;
+	//ADC enabled, prescaler to 128 bit
+	ADCSRA =
+	(1 << ADEN)  |
+	(1 << ADPS2) |
+	(1 << ADPS1) |
+	(1 << ADPS0);
+	
+	//do one read
+	ADCSRA |= (1<<ADSC);
+	while (ADCSRA & (1<<ADSC) ) {
+	}
+	(void) ADCW;
 }
 
-/* 
- * Do a single ADC read
- */
+/*
+* Do a single ADC read
+*/
 uint16_t readADC(void)
 {
 	
@@ -45,15 +48,15 @@ uint16_t readADC(void)
 	adc_lobyte = ADCL; // get the sample value from ADCL
 	raw_adc = ADCH<<8 | adc_lobyte;   // add lobyte and hibyte
 
-	return raw_adc;                    
+	return raw_adc;
 }
 
 
 /*
- * Do a few samples and return average.
- *
- * param nsamples Sample count
- */
+* Do a few samples and return average.
+*
+* param nsamples Sample count
+*/
 uint16_t readADCsamples( uint8_t nsamples )
 {
 	uint32_t sum = 0;
@@ -64,15 +67,23 @@ uint16_t readADCsamples( uint8_t nsamples )
 	
 	return (uint16_t)( sum / nsamples );
 }
- 
+
 uint16_t getVoltage (void){
-	return readADCsamples (50);
+	return readADCsamples (5);
 }
 
 uint8_t shutdownVoltageReached(void){
 	return (getVoltage () < shutdownTresholdVoltage);
 }
 
+void visualizeVoltage (int8_t port){
+	uint16_t voltage = readADCsamples (1);
+	voltage = (voltage - shutdownTresholdVoltage)/25;
+	for (uint8_t i= 0; i < voltage; i++){
+		_delay_ms(100);
+		PINB |= (1<< port);
+	}	
+}
 
 
 

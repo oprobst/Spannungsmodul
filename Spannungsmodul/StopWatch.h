@@ -6,17 +6,7 @@
 /*
  * Start stopwatch
  */
-void startStopWatch ();
-
-/*
- * stop stopwatch
- */
-void stopStopwatch ();
-
-/*
- * Reset millis to 0
- */
-void resetStopwatch ();
+void startStopwatch ();
 
 /*
  * get milliseconds since calling start();

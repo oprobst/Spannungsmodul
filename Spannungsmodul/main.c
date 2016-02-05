@@ -1,11 +1,11 @@
 /*
- * Spannungsmodul.c
- *
- * Created: 16.01.2016 22:09:29
- * Author : Oliver
- */ 
+* Spannungsmodul.c
+*
+* Created: 16.01.2016 22:09:29
+* Author : Oliver
+*/
 
-#include <avr/io.h> 
+#include <avr/io.h>
 #include <avr/sleep.h>
 
 #include <avr/wdt.h>
@@ -20,136 +20,155 @@
 #define TRUE 1
 #define FALSE 0
 
-#include <util/delay.h>
-#include <stdint.h> 
-#include <avr/interrupt.h>
+#define ADC_TRESHOLD 1 //670
 
-uint8_t isRunning = FALSE;
+#include <util/delay.h>
+#include <stdint.h>
+#include <avr/interrupt.h>
 
 int main(void)
 {
-    //out:
+	//out:
 	//PB1,PB2 -> Relais
-    //PB4 LED
+	//PB4 LED
 	//PB0 MOSFET
-	 //in: 
+	//in:
 	//PB3 ADC for voltage measurement
-    DDRB |= ((1 << PB1) |(1 << PB2) |(0 << PB3) |(1 << PB4) | (1 << PB0));
-   
-    initADC(670);
-	PORTB |= (1<<PB4);
-	sei();	
+	DDRB |= ((1 << PB1) |(1 << PB2) |(0 << PB3) |(1 << PB4) | (1 << PB0));
 	
-	resetStopwatch();
+	initADC(ADC_TRESHOLD); 
+	PORTB &= ~(1 << PB4);
+	PORTB &= ~(1 << PB0); 
+	
+	start();
+	sei();
 	startStopwatch();
-    	
- while( 1 ) {
-	 
-	 //check if minimum shutdown voltage reached and pwr down.
-	 checkForShutdown ();
-	 
-	 checkForButton();	 	
 
-	  if (! isRunning && getStopwatchMillis()>10000)){
-		  //No new input since 10 sec. Start timer
-		  start ();
-		  isRunning = true;
-		  stopStopwatch();
-	  } else if (!isRunning){
-		 _delay_ms(100); 
-	  }
-	  else {
-		sleep ();  
-	  }	    
-    }
+	while( 1 ) {
+	   // blink();
+		//check if minimum shutdown voltage reached and pwr down.
+		checkForShutdown ();
+	
+		checkForButton();
+		
+		//_delay_ms(10);
+		
+		if ( isOn() == FALSE && getStopwatchMillis() > 1000){
+			
+			//No new input since 10 sec. Start timer
+			switchOn ();
+			
+			} else if (isOn() == FALSE){
+			
+			checkIfTimeIsOver();
+			} else {
+			sleep ();
+		}
+		
+		
+	}
 }
 
 void sleep (){
-	for (int8_t = 0; i < 250; i++){
-	  checkForButton();
-	  _delay_ms(120);
-	  // an interrupt would be more useful here... But anyway, it works.
+	int8_t i;
+	for (i = 0; i < 250; i++){
+		checkForButton();
+		_delay_ms(20); //20 = 5 sec
+		// an interrupt would be more useful here... But anyway, it works.
 	}
 	
 	//Short flash every half minute
-	PORTB |= (1<<PB4);      
-	_delay_ms(120);
-	PORTB |= (0<<PB4);     
+	visualizeVoltage(PB4);	 
 }
 
 /*
- * Check if voltage divider is bridged by switch.
- * If longer than 1 sec. pushed, call longButtonPush method, shortButtonPush otherwise.
- */
+* Check if voltage divider is bridged by switch.
+* If longer than 1 sec. pushed, call longButtonPush method, shortButtonPush otherwise.
+*/
 void checkForButton (void){
 	if (readADCsamples(3) > 1000){
-     	for (uint8_t i = 0; i < 10; i++){
+		uint8_t i;
+		for ( i = 0; i < 10; i++){
 			_delay_ms(100);
- 		     if (readADCsamples(3) < 1000){
-				 shortButtonPush();
-				 return;
-			 }
-	    } 
+			if (readADCsamples(3) <= 1000){
+				shortButtonPush();
+				return;
+			}
+		}
 		longButtonPush();
 	}
 }
 
 void longButtonPush (){
 	
-	if (isRunning){
+	if (isOn()){
 		//reset
-		 wdt_enable(WDTO_15MS);  
-        for(;;) {}    
-	} else {
+		wdt_enable(WDTO_15MS);
+		for(;;) {}
+		} else {
 		add1Hour ();
-		visualizeTimer(PB3);
-		resetStopWatch();
+		visualizeTimer(PB4);
+		startStopwatch();
 	}
 }
 
 void shortButtonPush (){
 	
-	if (isRunning){
+	if (isOn()){
 		//shutdown
 		for (uint8_t i = 0; i< 100 ; i++ ){
-			 _delay_ms(100);
-			 PINB |= (1<<PB4); //Invert PB4           
-		 }
+			_delay_ms(100);
+			PINB |= (1<<PB4); //Invert PB4
+		}
 		turnMeOff ();
-	} else {
+		} else {
+		
 		add5Minutes ();
-		visualizeTimer(PB3);
-		resetStopWatch();
+		visualizeTimer(PB4);
+		startStopwatch();
 	}
 }
 
 void checkForShutdown (void){
-	 if (shutdownVoltageReached()){  	 	   
-	   while (1){	     
-	      isRunning = FALSE;
-		 // wait 10 sec and then turn off.
-		 for (uint8_t i = 0; i< 100 ; i++ ){
-			 _delay_ms(100);
-			 PINB |= (1<<PB4); //Invert PB4           
-		 }
-		  
-	     turnMeOff();
-	   }
-	 }
+	if (shutdownVoltageReached()){
+		
+		// wait 10 sec and then turn off.
+		for (uint8_t i = 0; i< 100 ; i++ ){
+			_delay_ms(100);
+			PINB |= (1<<PB4); //Invert PB4
+		}
+		
+		turnMeOff();
+		
+	}
 }
 
 void turnMeOff(){
 	switchOff();
-		 // Go to sleep and only wake up on reset/power switch.
-		 cli(); //disable interrupts
-		 PORTB &= ~(1<<PB4); // LED off
-		 set_sleep_mode(SLEEP_MODE_PWR_DOWN);
-         sleep_enable();
-         sleep_cpu();
-         sleep_disable();  
-		 //here everything should be silent. If we reach the next while loop, something is wrong.
-		 while (1){
-		    _delay_ms(1000); 
-		    PINB |= (1<<PB4); //Invert PB4          
-	     }
+	// Go to sleep and only wake up on reset/power switch.
+	cli(); //disable interrupts
+	PORTB &= ~(1<<PB4); // LED off
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+	sleep_enable();
+	sleep_cpu();
+	sleep_disable();
+	//here everything should be silent. If we reach the next while loop, something is wrong.
+	while (1){
+		_delay_ms(1500);
+		PINB |= (1<<PB4); //Invert PB4
+	}
+}
+
+uint8_t blinkC = 0;
+void blink(){
+	blinkC += 1;
+	if (blinkC == 2){
+		blinkC = 0;
+	    //PORTB |= (1<<PB0); 
+		PORTB |= (1 << PB0); 
+	    _delay_ms(300);
+	} else {PORTB &= ~(1 << PB0); 
+		
+	}
+	 
 }

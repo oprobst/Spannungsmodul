@@ -7,7 +7,7 @@
  * Start time measurement
  * param port: If not null, output will provided by a high/low frequenz of 2Hz for 3 sec when starting
  */
-void start (int8_t port);
+void start ();
 
 /*
  * Increase timer by 5 minutes
@@ -24,4 +24,6 @@ void add1Hour (void);
  * param port: Will show combination of long and short HIGH signals to show current timer state.
  */
 void visualizeTimer (int8_t port);
+
+uint32_t getMillisSinceStartup (void);
 #endif

@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		Spannungsmodul\PowerSwitch.h = Spannungsmodul\PowerSwitch.h
 		Spannungsmodul\StartupTimer.c = Spannungsmodul\StartupTimer.c
 		Spannungsmodul\StartupTimer.h = Spannungsmodul\StartupTimer.h
+		Spannungsmodul\StopWatch.c = Spannungsmodul\StopWatch.c
+		Spannungsmodul\StopWatch.h = Spannungsmodul\StopWatch.h
 		Spannungsmodul\VoltageCheck.c = Spannungsmodul\VoltageCheck.c
 		Spannungsmodul\VoltageCheck.h = Spannungsmodul\VoltageCheck.h
 	EndProjectSection

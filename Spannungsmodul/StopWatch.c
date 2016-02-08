@@ -7,13 +7,13 @@ uint32_t millisRef = 0;
 * Start stopwatch
 */
 void startStopwatch (){
-	millisRef = getMillisSinceStartup();
+	millisRef = getSecondsSinceStart();
 }
 
 
 /*
 * get milliseconds since calling start();
 */
-uint32_t getStopwatchMillis (void){
-	return getMillisSinceStartup() - millisRef;
+uint32_t getStopwatchSeconds (void){
+	return getSecondsSinceStart() - millisRef;
 }

@@ -12817,10 +12817,10 @@ Source: http://www.diodes.com/datasheets/ds23001.pdf</description>
 <part name="P+3" library="supply1" deviceset="+5V" device=""/>
 <part name="P+4" library="supply1" deviceset="+5V" device=""/>
 <part name="P+5" library="supply1" deviceset="+5V" device=""/>
-<part name="R6" library="rcl" deviceset="R-EU_" device="R1206" value="10k"/>
-<part name="R7" library="rcl" deviceset="R-EU_" device="R1206" value="10k"/>
-<part name="R10" library="rcl" deviceset="R-EU_" device="R1206" value="10k"/>
-<part name="R11" library="rcl" deviceset="R-EU_" device="R1206" value="10k"/>
+<part name="R6" library="rcl" deviceset="R-EU_" device="R1206" value="6,8k"/>
+<part name="R7" library="rcl" deviceset="R-EU_" device="R1206" value="6,8k"/>
+<part name="R10" library="rcl" deviceset="R-EU_" device="R1206" value="6,8k"/>
+<part name="R11" library="rcl" deviceset="R-EU_" device="R1206" value="6,8k"/>
 <part name="P+6" library="supply1" deviceset="+5V" device=""/>
 <part name="R12" library="rcl" deviceset="R-EU_" device="R1206" value="100k"/>
 <part name="JP4" library="pinhead" deviceset="PINHD-1X2" device=""/>

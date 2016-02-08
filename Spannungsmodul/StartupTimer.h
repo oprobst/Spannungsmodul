@@ -25,5 +25,5 @@ void add1Hour (void);
  */
 void visualizeTimer (int8_t port);
 
-uint32_t getMillisSinceStartup (void);
+uint32_t getSecondsSinceStart (void);
 #endif

@@ -11,6 +11,6 @@ void startStopwatch ();
 /*
  * get milliseconds since calling start();
  */
-uint8_t getStopwatchMillis (void);
+uint8_t getStopwatchSeconds (void);
  
 #endif

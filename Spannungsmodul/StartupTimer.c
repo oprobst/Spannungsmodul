@@ -29,9 +29,10 @@ void start (){
 ISR (TIMER0_COMPA_vect)
 {
 	millisekunden++;
-	millis++;
+	
 	if(millisekunden == 1000)
 	{
+		millis++;
 		sekunde++;
 		millisekunden = 0;
 		if(sekunde == 60)
@@ -54,10 +55,7 @@ ISR (TIMER0_COMPA_vect)
 
 
 void checkIfTimeIsOver(){
-	if (minuteBlocks * 15 + 15 < sekunde){
-		switchOn();
-	}
-	if (stunde*60+minute > hours*60+minuteBlocks*5){
+	if (stunde*60+minute > hours*60 + minuteBlocks*5){
 		switchOn();
 	}
 }
@@ -77,7 +75,7 @@ void add1Hour (void){
 	}
 }
 
-uint32_t getMillisSinceStartup (){
+uint32_t getSecondsSinceStart (){
 	return millis;
 }
 

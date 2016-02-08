@@ -5,33 +5,48 @@
 #define FALSE 0
 
 uint8_t isStarted = FALSE;
+#define TIME_TO_SIGNAL_START 2 // x2 sec
+#define TIME_TO_SIGNAL_STOP 2 // x2 sec
+#define RELAY_SWITCH_TIME 200 //ms
+
 
 void switchOn (void){
 	// blink 2 seconds
-	for (uint8_t i = 0; i< 5 ; i++ ){
+	for (uint8_t i = 0; i< TIME_TO_SIGNAL_START ; i++ ){
 		PORTB |= (1<<PB4); //Invert PB4
-		_delay_ms(100);
+		_delay_ms(300);
 		PORTB &= ~(1 << PB4);
-		_delay_ms(100);
+		_delay_ms(300);
 		PORTB |= (1<<PB4); 
-		_delay_ms(400);
+		_delay_ms(800);
 		PORTB &= ~(1 << PB4);
-		_delay_ms(100);
+		_delay_ms(600);
 	}
 	isStarted = TRUE;
 	PORTB |= (1<<PB1);
 	PORTB |= (1<<PB0);
-	_delay_ms(500);
+	_delay_ms(RELAY_SWITCH_TIME);
 	PORTB &= ~(1<<PB1);
 }
 
 void switchOff (void){
-	isStarted = FALSE;
+	// blink delay
+	isStarted = FALSE;	
+	for (uint8_t i = 0; i < TIME_TO_SIGNAL_STOP; i++ ){
+			PORTB |= (1<<PB4); 
+			_delay_ms(800);
+			PORTB &= ~(1 << PB4);
+			_delay_ms(300);
+			PORTB |= (1<<PB4);
+			_delay_ms(300);
+			PORTB &= ~(1 << PB4);
+			_delay_ms(600);
+	}
+	
 	PORTB |= (1<<PB2);
 	PORTB &= ~(1<<PB0);
-	_delay_ms(500);
+	_delay_ms(RELAY_SWITCH_TIME);
 	PORTB &= ~(1<<PB2);
-	
 }
 
 uint8_t isOn (void){

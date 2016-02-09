@@ -72,24 +72,29 @@ uint16_t getVoltage (void){
 	return readADCsamples (3);
 }
 
-uint8_t visualize = 1;
 uint8_t shutdownVoltageReached(void){
-	visualize = (getVoltage () < shutdownTresholdVoltage);
-	return visualize;
+	if (getVoltage () < shutdownTresholdVoltage){
+		for (uint8_t i = 0; i< 100; i++){
+			_delay_ms(35);
+			PINB |= (1<<PB4); //Invert PB4			
+		}
+		return 1;
+	}
+	return 0;
+	
 }
 
 void visualizeVoltage (int8_t port){
 	
-	if (visualize){
-		uint16_t voltage = getVoltage ();
-		voltage = (voltage - shutdownTresholdVoltage)/50;
-		for (uint8_t i= 0; i < voltage + 1; i++){
-			PORTB |= (1 << port);
-			_delay_ms(100);
-			PORTB &= ~(1 << port);
-			_delay_ms(100);
-			
-		}
+	uint16_t voltage = getVoltage ();
+	voltage = (voltage - shutdownTresholdVoltage)/50;
+	for (uint8_t i= 0; i < voltage + 1; i++){
+		PORTB |= (1 << port);
+		_delay_ms(100);
+		PORTB &= ~(1 << port);
+		_delay_ms(100);
+		
+		
 	}
 }
 

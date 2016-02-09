@@ -12,12 +12,12 @@ void start ();
 /*
  * Increase timer by 5 minutes
  */
-void add5Minutes (void);
+void addSmallTimer (void);
 
 /*
  * Increase timer by an hour
  */
-void add1Hour (void);
+void addBigTimer (void);
 
 /*
  * Send signal code to port showing current timer

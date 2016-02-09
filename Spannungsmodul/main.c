@@ -1,9 +1,3 @@
-/*
-* Spannungsmodul.c
-*
-* Created: 16.01.2016 22:09:29
-* Author : Oliver
-*/
 
 #include <avr/io.h>
 #include <avr/sleep.h>
@@ -19,9 +13,9 @@
 
 #define F_CPU 1000000UL //1 MHz
 
-#define SEC_TILL_ON 10
+#define SEC_TILL_ON 15
 
-#define ADC_TRESHOLD 670 //670
+#define ADC_TRESHOLD 665
 
 #define TRUE 1
 #define FALSE 0
@@ -52,37 +46,32 @@ int main(void)
 	startStopwatch();
 
 	while( 1 ) {
-		//blink();
-		//check if minimum shutdown voltage reached and pwr down.
 		
 		checkForShutdown ();
 		
 		checkForButton();
 		
-		//if (isOn() == FALSE && getSecondsSinceStart() > SEC_TILL_ON){
-		//		switchOn ();
-		//}
 		if (getSecondsSinceStart() > SEC_TILL_ON){
 			if (isOn() == FALSE ){
 				checkIfTimeIsOver();
+				if ((getSecondsSinceStart() % 15) == 0){
+					visualizeTimer(PB4);
+				}
 			} else {
 				sleep ();
 			}
-		//}
+		}
 		
 	}
 }
 
 void sleep (){
 	int8_t i;
-	for (i = 0; i < 25; i++){
+	for (i = 0; i < 100; i++){
 		checkForButton();
-		_delay_ms(100); //20 = 5 sec
+		_delay_ms(100); // 10 sec
 		// an interrupt would be more useful here... But anyway, it works.
 	}
-	
-	//Short flash every half minute
-	
 	visualizeVoltage(PB4);
 }
 
@@ -111,7 +100,7 @@ void longButtonPush (){
 		wdt_enable(WDTO_15MS);
 		for(;;) {}
 		} else {
-		add1Hour ();
+		addBigTimer ();
 		visualizeTimer(PB4);
 		startStopwatch();
 	}
@@ -126,7 +115,7 @@ void shortButtonPush (){
 		
 		} else {
 		
-		add5Minutes ();
+		addSmallTimer ();
 		visualizeTimer(PB4);
 		startStopwatch();
 	}
@@ -151,19 +140,4 @@ void checkForShutdown (void){
 		}
 	}
 }
-
-
-uint16_t blinkC = 0;
-void blink(){
-	blinkC += 1;
-	if (blinkC == 2200){
-		blinkC = 0;
-		//PORTB |= (1<<PB0);
-		PORTB |= (1 << PB0);
-		_delay_ms(300);
-		} else {
-		PORTB &= ~(1 << PB0);
-		
-	}
 	
-}

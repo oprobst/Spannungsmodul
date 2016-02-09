@@ -4,15 +4,19 @@
 #include <stdint.h>
 #include <util/delay.h>
 
-//Variablen für die Zeit
-uint16_t millisekunden= 0;
-uint8_t sekunde= 0;
-uint8_t minute= 0;
-uint8_t stunde= 0;
-uint32_t millis = 0;
+#define SMALL_TIMER_VALUE 10
+#define BIG_TIMER_VALUE 60
+#define BIG_TIMER_MAX_VALUE 24
 
-uint8_t minuteBlocks = 0;
-uint8_t hours = 0;
+uint16_t milliseconds= 0;
+uint8_t seconds= 0;
+uint8_t minutes= 0;
+uint8_t hours= 0;
+
+uint32_t secondsSinceStart = 0;
+
+uint8_t smallTimerCount = 0;
+uint8_t bigTimerCount = 0;
 
 void start (){
 	
@@ -28,26 +32,26 @@ void start (){
 
 ISR (TIMER0_COMPA_vect)
 {
-	millisekunden++;
+	milliseconds++;
 	
-	if(millisekunden == 1000)
+	if(milliseconds == 1000)
 	{
-		millis++;
-		sekunde++;
-		millisekunden = 0;
-		if(sekunde == 60)
+		secondsSinceStart++;
+		seconds++;
+		milliseconds = 0;
+		if(seconds == 60)
 		{
-			minute++;
-			sekunde = 0;
+			minutes++;
+			seconds = 0;
 		}
-		if(minute == 60)
+		if(minutes == 60)
 		{
-			stunde++;
-			minute = 0;
+			hours++;
+			minutes = 0;
 		}
-		if(stunde == 24)
+		if(hours == 24)
 		{
-			stunde = 0;
+			hours = 0;
 		}
 	}
 	
@@ -55,40 +59,52 @@ ISR (TIMER0_COMPA_vect)
 
 
 void checkIfTimeIsOver(){
-	if (stunde*60+minute > hours*60 + minuteBlocks*5){
+	if (hours * 60 + minutes > bigTimerCount * BIG_TIMER_VALUE + smallTimerCount * SMALL_TIMER_VALUE ){
 		switchOn();
 	}
 }
 
-void add5Minutes (void){
-	minuteBlocks++;
-	if (minuteBlocks >=12){
-		minuteBlocks -= 12;
-		add1Hour();
+void addSmallTimer (void){
+	smallTimerCount++;
+	if (smallTimerCount * SMALL_TIMER_VALUE >= BIG_TIMER_VALUE){
+		smallTimerCount = 0;
+		addBigTimer();
 	}
 }
 
-void add1Hour (void){
-	hours++;
-	if (hours > 24){
-		hours = 0;
+void addBigTimer (void){
+	bigTimerCount++;
+	if (bigTimerCount > BIG_TIMER_MAX_VALUE){
+		bigTimerCount = 0;
 	}
 }
 
 uint32_t getSecondsSinceStart (){
-	return millis;
+	return secondsSinceStart;
 }
 
 void visualizeTimer (int8_t port){
 	PORTB |= (0<<PB4); //Set PB4 off
-	for (uint8_t i = 0; i< hours *2; i++){
+	
+	// remaining minutes = (configured Minutes) - time since startup
+	uint16_t remainingMinutes =  (bigTimerCount * BIG_TIMER_VALUE + smallTimerCount * SMALL_TIMER_VALUE) - (hours * 60 + minutes) ;
+	uint8_t remBigs = remainingMinutes / BIG_TIMER_VALUE;
+	uint8_t remSmalls = remainingMinutes % BIG_TIMER_VALUE;
+	
+	for (uint8_t i = 0; i< remBigs *2; i++){
 		_delay_ms(1000);
 		PINB |= (1<<PB4); //Invert PB4
 		
 	}
-	for (uint8_t i = 0; i< minuteBlocks *2; i++){
+	for (uint8_t i = 0; i < (remSmalls / SMALL_TIMER_VALUE) *2 ; i++){
 		_delay_ms(300);
-		PINB |= (1<<PB4); //Invert PB4
-		
+		PINB |= (1<<PB4); //Invert PB4		
+	}
+	_delay_ms(300);
+	PINB |= (1<<PB4); 
+	_delay_ms(50);
+	PINB |= (1<<PB4); 
+	if (remainingMinutes <= 0){
+		_delay_ms(650);
 	}
 }

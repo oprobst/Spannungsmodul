@@ -73,20 +73,13 @@ uint16_t getVoltage (void){
 }
 
 uint8_t shutdownVoltageReached(void){
-	if (getVoltage () < shutdownTresholdVoltage){
-		for (uint8_t i = 0; i< 100; i++){
-			_delay_ms(35);
-			PINB |= (1<<PB4); //Invert PB4			
-		}
-		return 1;
-	}
-	return 0;
-	
+	return (getVoltage () < shutdownTresholdVoltage);
 }
 
 void visualizeVoltage (int8_t port){
+    int16_t voltage = getVoltage ();
+	if (getVoltage () > shutdownTresholdVoltage){
 	
-	uint16_t voltage = getVoltage ();
 	voltage = (voltage - shutdownTresholdVoltage)/50;
 	for (uint8_t i= 0; i < voltage + 1; i++){
 		PORTB |= (1 << port);
@@ -95,6 +88,7 @@ void visualizeVoltage (int8_t port){
 		_delay_ms(100);
 		
 		
+	}
 	}
 }
 

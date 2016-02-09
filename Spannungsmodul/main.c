@@ -123,11 +123,15 @@ void shortButtonPush (){
 
 // Shutdown
 void checkForShutdown (void){
+	
 	if (shutdownVoltageReached()){
-		switchOff();
-		//if (1) return; //DEBUG
-		// Go to sleep and only wake up on reset/power switch.
 		cli(); //disable interrupts
+		for (uint8_t i = 0; i< 100; i++){
+			_delay_ms(35);
+			PINB |= (1<<PB4); //Invert PB4
+		}		
+		switchOff();
+		// Go to sleep and only wake up on reset/power switch.		
 		PORTB &= ~(1<<PB4); // LED off
 		set_sleep_mode(SLEEP_MODE_PWR_DOWN);
 		sleep_enable();

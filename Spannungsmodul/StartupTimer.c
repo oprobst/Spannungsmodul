@@ -59,7 +59,7 @@ ISR (TIMER0_COMPA_vect)
 
 
 void checkIfTimeIsOver(){
-	if (hours * 60 + minutes > bigTimerCount * BIG_TIMER_VALUE + smallTimerCount * SMALL_TIMER_VALUE ){
+	if (hours * 60 + minutes >= bigTimerCount * BIG_TIMER_VALUE + smallTimerCount * SMALL_TIMER_VALUE ){
 		switchOn();
 	}
 }

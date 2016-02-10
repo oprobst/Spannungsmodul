@@ -13,14 +13,12 @@
 
 #define F_CPU 1000000UL //1 MHz
 
-#define SEC_TILL_ON 15
+#define SEC_TILL_ON 10
 
-#define ADC_TRESHOLD 665
+#define ADC_TRESHOLD 660
 
 #define TRUE 1
 #define FALSE 0
-
-
 
 int main(void)
 {
@@ -111,6 +109,7 @@ void shortButtonPush (){
 	if (isOn()){
 		//shutdown
 		startStopwatch();
+		resetTimer();
 		switchOff();
 		
 		} else {

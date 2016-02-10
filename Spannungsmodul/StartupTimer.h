@@ -26,4 +26,6 @@ void addBigTimer (void);
 void visualizeTimer (int8_t port);
 
 uint32_t getSecondsSinceStart (void);
+
+void resetTimer(void);
 #endif

@@ -57,6 +57,15 @@ ISR (TIMER0_COMPA_vect)
 	
 }
 
+void resetTimer() {
+	bigTimerCount = 0;
+	smallTimerCount = 0;
+    milliseconds= 0;
+	seconds= 0;
+	minutes= 0;
+	hours= 0;
+    secondsSinceStart = 0;	
+}
 
 void checkIfTimeIsOver(){
 	if (hours * 60 + minutes >= bigTimerCount * BIG_TIMER_VALUE + smallTimerCount * SMALL_TIMER_VALUE ){
@@ -104,7 +113,7 @@ void visualizeTimer (int8_t port){
 	PINB |= (1<<PB4); 
 	_delay_ms(50);
 	PINB |= (1<<PB4); 
-	if (remainingMinutes <= 0){
+	if (remainingMinutes < SMALL_TIMER_VALUE){
 		_delay_ms(650);
 	}
 }

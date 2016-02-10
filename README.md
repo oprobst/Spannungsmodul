@@ -19,3 +19,4 @@ To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8
    * *X2*: 1x Input voltage, 2x output voltage via relay
 
 ![Exported schematic for the module](/Schaltplan.png?raw=true "Schematic")
+(*For newest schematic, please check the original eagle files!)

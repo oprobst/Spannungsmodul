@@ -25,7 +25,13 @@ void addBigTimer (void);
  */
 void visualizeTimer (int8_t port);
 
+/*
+ * The seconds since the system powered on, or reset was called.
+ */
 uint32_t getSecondsSinceStart (void);
 
+/*
+ * Reset timer to zero.
+ */
 void resetTimer(void);
 #endif

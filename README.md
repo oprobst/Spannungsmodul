@@ -1,9 +1,36 @@
 # Spannungsversorgungsmodul
 
-Microcontroller based toggle for supply voltage for other modules.
+Microcontroller based toggle to supply other modules with power.
 
-This circuit controls a toggle for other modules. 
-The start time can be configured by a timer. This will be done by a switch after system start.
+  * The start time can be configured by a timer. 
+  * Low voltage monitoring
+  * Provide 5V stabilized and supply voltage to 3rd party modules
+  * Timer and voltage visualization by LED
+
+## Usage
+
+When connected to power, the module will start to delivery a stabilized 5V and the supply voltage to a 3rd party component after a configured amount of time.
+
+### Start timer configuration
+
+The module start in status OFF. When initializing, it send an switch-off signal to the relay to ensure status.
+
+When the module is connected to power, it waits for a few seconds for user input (defined by constant SEC_TILL_ON, default is 10 sec). Every button action will increase this wait time. When the button is pushed less than 1 sec, the wait time will be increased by StartupTimer#SMALL_TIMER_VALUE (default = 10min). When pushed longer than a second, it will be increased by StartupTimer#BIG_TIMER_VALUE (default = 60min). This time is calculated based on the initial start-up of the module (first connectivity with supply voltage).
+The current wait time is visualized by the status LED: Long blink interval means big duration, short blink interval means complete small timer duration to wait. A very short flash signals end of wait time visualization. This will apply every 15 seconds when waiting in OFF mode.
+
+When the wait time is exposed, the system will signal two times short-long blinking. Then it activates the relay and mosfet transistor.
+It changes to status ON.
+
+### Voltage monitoring
+Within this status, the system visualizes every 15 seconds the current Voltage measurement. According to the Jumper JP4, it measures the distance from full battery to 9V or 6V (2 or 3 cell LiPo Battery) cut-off voltage. The maximum voltage is not defined by Software, a Z-Diode will restrict it and protect the ADC. Actually, the maximum voltage is defined by hardware and is somewhere around 30V (depending on DCDC converter).
+
+The voltage will be visualized by a flashing. The more often the LED flashes, the longer is the distance to cut-off voltage. 
+
+When voltage reaches the cut-off voltage (defined by main#ADC_TRESHOLD, default = 660), the LED will do fast flashing for a around 3 seconds and then initialize the shutdown procedure. This means that the module- will visualize shut down by two seconds of long-sort blinking. Then, the relay as well as the mosfet will be triggered off. On low voltage shutdown, the microcontroller will be send to power saving sleep mode (SLEEP_MODE_PWR_DOWN). This can only be reverted, when turning supply voltage off and on again (reset).
+
+When the button is pushed during ON mode, she shutdown procedure will also activated. In opposite to the voltage cut-off, this will not trigger a power saving sleep mode. But all timers (including startup-time) will be reset and the system is in OFF mode. Then everything starts again.
+
+## Setup
 
 Once started, it activates a bistable relay (via H-Bridge) toggling input voltage to the target system. Maximum current is 5 ampere (depending on relay).
 

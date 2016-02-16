@@ -46,4 +46,9 @@ To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8
    * *X2*: 1x Input voltage, 2x output voltage via relay
 
 ![Exported schematic for the module](/Schaltplan.png?raw=true "Schematic")
-(*For newest schematic, please check the original eagle files!)
+(_For newest schematic, please check the original eagle files!_)
+
+## Further possible improvements
+
+  * The H-Bridge is build with 4 NPN Transistors. I constructed this before I heard about the H-Bridge Pattern. Usually it is set up with 2 NPN and 2 PNP transistors, which is more efficient.
+  * The relay is not really necessary, because it just toggles the supply voltage. So controlling a high power N-Channel Mosfet would be much more efficient. The relay makes only sense when controlling higher voltage (e.g. 220V) or to archieve galvanic isolation.

@@ -50,5 +50,6 @@ To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8
 
 ## Further possible improvements
 
+  * The N-Channel Mosfet is configured as *High Switch*, but it is a LL N-Channel. This will cause a voltage drop to 3.4 V at Output on Jumper 1. In the next version, it must be configured as *Low Switch*.
   * The H-Bridge is build with 4 NPN Transistors. I constructed this before I heard about the H-Bridge Pattern. Usually it is set up with 2 NPN and 2 PNP transistors, which is more efficient.
   * The relay is not really necessary, because it just toggles the supply voltage. Controlling a high power N-Channel Mosfet instead would be much more efficient. The relay makes only sense when controlling higher voltage supply or to archieve galvanic isolation of another power source.

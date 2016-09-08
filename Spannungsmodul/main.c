@@ -20,6 +20,10 @@
 #define TRUE 1
 #define FALSE 0
 
+/*
+ * Main method, will initialize Ports and handle timers, shutdown voltage
+ * and button input by user.
+ */
 int main(void)
 {
 	
@@ -67,6 +71,10 @@ int main(void)
 	}
 }
 
+/*
+ * Busy waiting. Check button input from time to time.
+ * (could be reimplemented by interrupts somewhere in the future...)
+ */
 void sleep (){
 	int8_t i;
 	for (i = 0; i < 100; i++){
@@ -95,6 +103,10 @@ void checkForButton (void){
 	}
 }
 
+/*
+ * Will be called on long button push. Triggers increase of big timer duration.
+ * Should also do a reset when system is ON, but this doesn't working...?
+ */
 void longButtonPush (){
 	
 	if (isOn()){
@@ -108,6 +120,9 @@ void longButtonPush (){
 	}
 }
 
+/*
+ * Short button push was detected. 
+ */
 void shortButtonPush (){
 	
 	if (isOn()){
@@ -124,7 +139,10 @@ void shortButtonPush (){
 	}
 }
 
-// Shutdown
+/*
+ * Check if shutdown voltage has been reached.
+ * Power down everything in this case.
+ */
 void checkForShutdown (void){
 	
 	if (shutdownVoltageReached()){

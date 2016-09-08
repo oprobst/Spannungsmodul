@@ -29,15 +29,19 @@ int main(void)
 	//PB0 MOSFET
 	//in:
 	//PB3 ADC for voltage measurement
-	DDRB |= ((1 << PB1) |(1 << PB2) |(0 << PB3) |(1 << PB4) | (1 << PB0));
+	DDRB |= ((0 << PB1) |(1 << PB2) |(0 << PB3) |(1 << PB4) | (1 << PB0));
 	
 	initADC(ADC_TRESHOLD);
-	PORTB &= ~(1 << PB4);
+	PORTB &= ~(1 << PB2);
 	PORTB &= ~(1 << PB0);
 	
-	PORTB |= (1<<PB2);
-	_delay_ms(100);
-	PORTB &= ~(1<<PB2);
+	PORTB |= (1<<PB4);
+	_delay_ms(200);
+	PORTB &= ~(1<<PB4);
+	_delay_ms(200);
+	PORTB |= (1<<PB4);
+	_delay_ms(200);
+	PORTB &= ~(1<<PB4);
 	
 	start();
 	sei();

@@ -18,7 +18,7 @@ The module start in status OFF. When initializing it send an switch-off signal t
 When the module is connected to power, it waits a few seconds for user input (defined by constant SEC_TILL_ON, default is 10 sec). Every button operation in OFF mode will increase this wait time. When the button is pushed less than 1 sec, the wait time will be increased by StartupTimer#SMALL_TIMER_VALUE (default = 10min). When pushed longer than a second, it will be increased by StartupTimer#BIG_TIMER_VALUE (default = 60min). This time is calculated based on the initial start-up of the module (first connectivity with supply voltage).
 The current wait time is visualized by the status LED: Long blink interval means a big waiting duration, short blink interval means that the system waits a complete small timer duration until it starts. A very short flash signals end of wait time visualization. This will apply every 15 seconds when waiting in OFF mode.
 
-When the wait time is exposed, the system will signal two times short-long blinking. Then it activates the relay and mosfet transistor.
+When the wait time is exposed, the system will signal two times short-long blinking. Then it activates the mosfet transistors.
 It changes to status ON.
 
 ### Voltage monitoring
@@ -32,24 +32,11 @@ When the button is pushed during ON mode, she shutdown procedure will also activ
 
 ## Set-up
 
-Once started, it activates a bistable relay (via H-Bridge) toggling input voltage to the target system. Maximum current is 5 ampere (depending on relay).
+Once started, it activates the transistors toggling input voltage to the target system. Maximum current is 5 ampere (depending on mosfet).
 
 In addition, it provides a PIN output for a 5V DCDC converted voltage. Maximum current is restricted to 1 ampere (depending on DCDC Converter).
 
-To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8.4V to 6V) LiPo batteries is available.
-
-   * *JP1*: External interface exports 5V via DCDC Converter. Additional pin with source voltage
-   * *JP2*: ISP for Programmer
-   * *JP3*: Disables the relay. Used to prevent uncontrolled action during programming.
-   * *JP4*: Switches low voltage shutdown detection between 2s and 3s LiPo batteries.
-   * *X1*: 3x GND connector
-   * *X2*: 1x Input voltage, 2x output voltage via relay
+To protect the battery, a low voltage detection for 3s (12.6V to 9.2V) and 2s (8.4V to 6V) LiPo batteries is available. This is configured by the jumper.
 
 ![Exported schematic for the module](/Schaltplan.png?raw=true "Schematic")
 (_For newest schematic, please check the original eagle files!_)
-
-## Further possible improvements
-
-  * The N-Channel Mosfet is configured as *High Switch*, but it is a LL N-Channel. This will cause a voltage drop to 3.4 V at Output on Jumper 1. In the next version, it must be configured as *Low Switch*.
-  * The H-Bridge is build with 4 NPN Transistors. I constructed this before I heard about the H-Bridge Pattern. Usually it is set up with 2 NPN and 2 PNP transistors, which is more efficient.
-  * The relay is not really necessary, because it just toggles the supply voltage. Controlling a high power N-Channel Mosfet instead would be much more efficient. The relay makes only sense when controlling higher voltage supply or to archieve galvanic isolation of another power source.
